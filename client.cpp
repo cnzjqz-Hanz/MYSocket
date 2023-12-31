@@ -3,9 +3,7 @@
 #include <string>
 #include <WinSock2.h>
 #include <Windows.h>
-#include <chrono>
-#include <fstream>
-#include <ctime>
+
 #pragma comment(lib, "ws2_32.lib")
 
 using namespace std;
@@ -78,18 +76,19 @@ DWORD WINAPI RecvProc(LPVOID lp)
                      << endl;
                 break;
             case CLIENT_LIST:
-                cout << "\n[INFO] Client list: " << recvPack.data << "\n"
+                cout << "\n[INFO] Client list: \n" << recvPack.data << "\n"
                      << endl;
                 break;
             case MESSAGE:
                 cout << "\n[INFO] Message from " << recvPack.data << endl;
+                cout << "\nPlease enter your option: ";
                 break;
             case CLOSE:
-                cout << "\n[INFO] Connection closed by server.\n"
+                cout << "\n[INFO] Connection closed.\n"
                      << endl;
                 return 0;
             case EXIT:
-                cout << "\n[INFO] Server is shutting down.\n"
+                cout << "\n[INFO] Exit.\n"
                      << endl;
                 return 0;
             }
@@ -115,7 +114,7 @@ void run(void) {
         }
         switch (opt) {
         case 0:
-            if (!isConnected) {
+            if (isConnected) {
                 message sendPack;
                 sendPack.type = TIME;
                 send(sClient, (char *)&sendPack, sizeof(sendPack), 0);
@@ -128,7 +127,7 @@ void run(void) {
                     return;
                 }
                 string input;
-                cout << "[TIME] Please enter the server IP address: ";
+                cout << "> Please enter the server IP address: ";
                 cin >> input;
                 auto ip = inet_addr(input.c_str());
                 if (ip == INADDR_NONE) {
@@ -196,7 +195,7 @@ void run(void) {
                 cin >> cport;
                 cout << "> Please enter the message: ";
                 cin >> cmsg;
-                string msg_pack = caddr + " " + cport + " " + cmsg;
+                string msg_pack = caddr + ":" + cport + " " + cmsg;
                 strcpy(sendPack.data, msg_pack.c_str());
                 send(sClient, (char *)&sendPack, sizeof(sendPack), 0);
                 Sleep(200);
