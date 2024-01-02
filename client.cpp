@@ -10,7 +10,7 @@ using namespace std;
 
 enum RQ_TYPE
 {
-    STRING = 0x1,
+    CHECK = 0x1,
     _ERROR,
     TIME,
     NAME,
@@ -62,7 +62,7 @@ DWORD WINAPI RecvProc(LPVOID lp)
         {
             switch (recvPack.type)
             {
-            case STRING:
+            case CHECK:
                 cout << "\n[INFO] " << recvPack.data << endl;
                 break;
             case _ERROR:
@@ -194,7 +194,7 @@ void run(void) {
                 cout << "> Please enter the client port: ";
                 cin >> cport;
                 cout << "> Please enter the message: ";
-                cin >> cmsg;
+                getline(cin, cmsg, '\n');
                 string msg_pack = caddr + ":" + cport + " " + cmsg;
                 strcpy(sendPack.data, msg_pack.c_str());
                 send(sClient, (char *)&sendPack, sizeof(sendPack), 0);

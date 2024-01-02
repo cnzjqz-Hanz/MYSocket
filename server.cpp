@@ -15,7 +15,7 @@ using namespace std;
 
 enum RQ_TYPE
 {
-    STRING = 0x1,
+    CHECK = 0x1,
     _ERROR,
     TIME,
     NAME,
@@ -50,7 +50,7 @@ map<SOCKET, sClientInfo> sClients;
 HANDLE mutex;
 SOCKET srvSock;
 
-int sendString(SOCKET sClient, const char str[], int type = STRING)
+int sendString(SOCKET sClient, const char str[], int type = CHECK)
 {
     message pack;
     pack.type = static_cast<RQ_TYPE>(type);
@@ -66,7 +66,7 @@ DWORD WINAPI ThreadProc(LPVOID lp)
     sClientAddr = sClients[sClient].getAddr();
     memcpy(sClientIPv4, &sClientAddr, 4);
 
-    /* 客户端回馈 */
+    /* 返回给客户端的信息 */
     sendString(sClient, "Server connected.");
 
     /* 服务器连接成功提示 */
